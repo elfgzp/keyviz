@@ -70,8 +70,9 @@ where
         // Periodically check and re-enable event tap to handle macOS background restrictions
         loop {
             let result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 5.0, false);
-            if result == 2 || result == 3 {
-                // kCFRunLoopRunStopped (2) or kCFRunLoopRunFinished (3)
+            // kCFRunLoopRunFinished=1, kCFRunLoopRunStopped=2 → exit
+            // kCFRunLoopRunTimedOut=3, kCFRunLoopRunHandledSource=4 → continue
+            if result == 1 || result == 2 {
                 break;
             }
             if !EVENT_TAP.is_null() && !CGEventTapIsEnabled(EVENT_TAP) {
