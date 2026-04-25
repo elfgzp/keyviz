@@ -72,7 +72,7 @@ const createKeyEventStore = createSyncedStore<KeyEventStore>(
         listening: true,
         settingsOpen: false,
         dragThreshold: 50,
-        filter: "modifiers",
+        filter: "none",
         allowedKeys: [
             RawKey.ControlLeft,
             RawKey.MetaLeft,
@@ -211,6 +211,7 @@ const createKeyEventStore = createSyncedStore<KeyEventStore>(
         },
         ignoreEvent(pressedKeys) {
             const state = get();
+            console.log("[DEBUG] filter=", state.filter, "key=", pressedKeys[0]);
             if (state.filter === "modifiers") {
                 return !MODIFIERS.has(pressedKeys[0]);
             }
@@ -398,8 +399,12 @@ const createKeyEventStore = createSyncedStore<KeyEventStore>(
         name: KEY_EVENT_STORE,
         storage: createJSONStorage(() => tauriStorage),
         partialize: (state) => {
-            const { pressedKeys, pressedMouseButton, mouse, groups, settingsOpen, ...persistedState } = state;
+            const { pressedKeys, pressedMouseButton, mouse, groups, settingsOpen, filter, allowedKeys, ...persistedState } = state;
             return persistedState;
+        },
+        // Force reset filter to "none" on every load to fix old persisted "modifiers" value
+        merge: (persistedState, currentState) => {
+            return { ...currentState, ...persistedState as any, filter: "none" };
         },
     }),
 );

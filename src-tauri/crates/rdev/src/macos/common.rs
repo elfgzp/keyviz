@@ -96,10 +96,13 @@ extern "C" {
     pub fn CFRunLoopAddSource(rl: CFRunLoopRef, source: CFRunLoopSourceRef, mode: CFRunLoopMode);
     pub fn CFRunLoopGetMain() -> CFRunLoopRef;
     pub fn CGEventTapEnable(tap: CFMachPortRef, enable: bool);
+    pub fn CGEventTapIsEnabled(tap: CFMachPortRef) -> bool;
     pub fn CFRunLoopRun();
+    pub fn CFRunLoopRunInMode(mode: CFRunLoopMode, seconds: f64, returnAfterSourceHandled: bool) -> i32;
     pub fn CFRunLoopStop(rl: CFRunLoopRef);
 
     pub static kCFRunLoopCommonModes: CFRunLoopMode;
+    pub static kCFRunLoopDefaultMode: CFRunLoopMode;
 }
 
 #[allow(improper_ctypes)]
